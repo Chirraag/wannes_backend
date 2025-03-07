@@ -7,6 +7,7 @@ const https = require("https");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const webhookRoutes = require("./src/routes/webhookRoutes");
 
 const app = express();
 
@@ -14,7 +15,7 @@ const app = express();
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   storageBucket: "wannes-whitelabelled.appspot.com",
-});
+}, "appTwo");
 
 const db = admin.firestore();
 const bucket = admin.storage().bucket();
@@ -820,6 +821,9 @@ app.post("/api/webhook", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+// Add the webhook routes
+app.use("/webhook", webhookRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
